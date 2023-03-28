@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return jsonify({"success": true})
+    return jsonify({"success": True})
 
 @app.route('/check_domain', methods=['GET'])
 def check_domain():
