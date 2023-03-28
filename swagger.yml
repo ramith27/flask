@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Domain Checker API
+  version: 1.0.0
+servers:
+  - url: https://flask-production-8ee3.up.railway.app/
+paths:
+  /check_domain:
+    get:
+      summary: Check domain availability and registration details
+      parameters:
+        - in: query
+          name: domain
+          schema:
+            type: string
+          required: true
+          description: The domain name to check
+      responses:
+        '200':
+          description: Domain details
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/DomainAvailable'
+                  - $ref: '#/components/schemas/DomainNotAvailable'
+        '400':
+          description: Bad Request (missing or invalid domain parameter)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DomainAvailable:
+      type: object
+      properties:
+        available:
+          type: boolean
+          example: true
+    DomainNotAvailable:
+      type: object
+      properties:
+        available:
+          type: boolean
+          example: false
+        status:
+          type: array
+          items:
+            type: string
+          example: ["clientTransferProhibited", "serverDeleteProhibited", "serverTransferProhibited", "serverUpdateProhibited"]
+        registered_on:
+          type: string
+          format: date-time
+          example: "1995-08-14T04:00:00"
+        expires_on:
+          type: string
+          format: date-time
+          example: "2026-08-13T04:00:00"
+        updated_on:
+          type: string
+          format: date-time
+          example: "2021-08-09T17:40:17"
+        registrar:
+          type: string
+          example: "IANA ID: 292"
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid domain parameter"
